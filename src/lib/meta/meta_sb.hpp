@@ -26,7 +26,7 @@
 #include <homestore/blk.h>
 
 namespace homestore {
-static constexpr uint32_t META_BLK_HDR_MAX_SZ{512}; // max meta_blk_hdr size
+static constexpr uint32_t META_BLK_HDR_MAX_SZ{256}; // max meta_blk_hdr size
 static constexpr uint32_t META_BLK_MAGIC{0xCEEDBEED};
 static constexpr uint32_t META_BLK_OVF_MAGIC{0xDEADBEEF};
 static constexpr uint32_t META_BLK_SB_MAGIC{0xABCDCEED};
