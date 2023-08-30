@@ -222,6 +222,8 @@ public:
                           m_mbm->used_size());
         }
 
+	LOGINFO("writen meta blk is successful with meta blk total size:{}, content size:{}", ret_size_written, sz_to_wrt);
+
         static bool done_read{false};
         if (!done_read) {
             done_read = true;

@@ -44,8 +44,9 @@ MetaBlkService& meta_service() { return hs()->meta_service(); }
 MetaBlkService::MetaBlkService(const char* name) : m_metrics{name} { m_last_mblk_id = std::make_unique< BlkId >(); }
 
 void MetaBlkService::create_vdev(uint64_t size) {
-    const auto phys_page_size = hs()->device_mgr()->phys_page_size({PhysicalDevGroup::META});
-
+    //const auto phys_page_size = hs()->device_mgr()->phys_page_size({PhysicalDevGroup::META});
+    const auto phys_page_size = hs()->device_mgr()->atomic_page_size({PhysicalDevGroup::META});
+    LOGINFO("metablk vdev is created with block_size:{}", phys_page_size);
     struct blkstore_blob blob;
     blob.type = blkstore_type::META_STORE;
     m_sb_vdev = std::make_unique< VirtualDev >(hs()->device_mgr(), "meta", PhysicalDevGroup::META,
