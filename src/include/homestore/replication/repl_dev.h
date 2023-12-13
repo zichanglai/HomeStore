@@ -61,6 +61,7 @@ struct repl_req_ctx : public boost::intrusive_ref_counter< repl_req_ctx, boost::
 public:
     virtual ~repl_req_ctx();
     int64_t get_lsn() const { return lsn; }
+    MultiBlkId const& get_local_blkid() const { return local_blkid; }
 
     uint64_t dsn() const { return rkey.dsn; }
     uint64_t term() const { return rkey.term; }

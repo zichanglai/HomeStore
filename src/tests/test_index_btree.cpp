@@ -46,19 +46,20 @@ std::vector< std::string > test_common::HSTestHelper::s_dev_names;
 // TODO Add tests to do write,remove after recovery.
 // TODO Test with var len key with io mgr page size is 512.
 
-SISL_OPTION_GROUP(test_index_btree,
-                  (num_iters, "", "num_iters", "number of iterations for rand ops",
-                   ::cxxopts::value< uint32_t >()->default_value("500"), "number"),
-                  (num_entries, "", "num_entries", "number of entries to test with",
-                   ::cxxopts::value< uint32_t >()->default_value("5000"), "number"),
-                  (run_time, "", "run_time", "run time for io", ::cxxopts::value< uint32_t >()->default_value("360000"), "seconds"),
-                  (disable_merge, "", "disable_merge", "disable_merge", ::cxxopts::value< bool >()->default_value("0"), ""),
-                  (operation_list, "", "operation_list", "operation list instead of default created following by percentage",
-                   ::cxxopts::value< std::vector< std::string > >(), "operations [...]"),
-                  (preload_size, "", "preload_size", "number of entries to preload tree with",
-                   ::cxxopts::value< uint32_t >()->default_value("1000"), "number"),
-                  (seed, "", "seed", "random engine seed, use random if not defined",
-                   ::cxxopts::value< uint64_t >()->default_value("0"), "number"))
+SISL_OPTION_GROUP(
+    test_index_btree,
+    (num_iters, "", "num_iters", "number of iterations for rand ops",
+     ::cxxopts::value< uint32_t >()->default_value("500"), "number"),
+    (num_entries, "", "num_entries", "number of entries to test with",
+     ::cxxopts::value< uint32_t >()->default_value("5000"), "number"),
+    (run_time, "", "run_time", "run time for io", ::cxxopts::value< uint32_t >()->default_value("360000"), "seconds"),
+    (disable_merge, "", "disable_merge", "disable_merge", ::cxxopts::value< bool >()->default_value("0"), ""),
+    (operation_list, "", "operation_list", "operation list instead of default created following by percentage",
+     ::cxxopts::value< std::vector< std::string > >(), "operations [...]"),
+    (preload_size, "", "preload_size", "number of entries to preload tree with",
+     ::cxxopts::value< uint32_t >()->default_value("1000"), "number"),
+    (seed, "", "seed", "random engine seed, use random if not defined",
+     ::cxxopts::value< uint64_t >()->default_value("0"), "number"))
 
 struct FixedLenBtreeTest {
     using BtreeType = IndexTable< TestFixedKey, TestFixedValue >;
@@ -109,10 +110,10 @@ struct BtreeTest : public BtreeTestHelper< TestType > {
     class TestIndexServiceCallbacks : public IndexServiceCallbacks {
     public:
         TestIndexServiceCallbacks(BtreeTest* test) : m_test(test) {}
-        std::shared_ptr< IndexTableBase > on_index_table_found(const superblk< index_table_sb >& sb) override {
+        std::shared_ptr< IndexTableBase > on_index_table_found(superblk< index_table_sb >&& sb) override {
             LOGINFO("Index table recovered");
             LOGINFO("Root bnode_id {} version {}", sb->root_node, sb->link_version);
-            m_test->m_bt = std::make_shared< typename T::BtreeType >(sb, m_test->m_cfg);
+            m_test->m_bt = std::make_shared< typename T::BtreeType >(std::move(sb), m_test->m_cfg);
             return m_test->m_bt;
         }
 
@@ -464,10 +465,10 @@ struct BtreeConcurrentTest : public BtreeTestHelper< TestType > {
     class TestIndexServiceCallbacks : public IndexServiceCallbacks {
     public:
         TestIndexServiceCallbacks(BtreeConcurrentTest* test) : m_test(test) {}
-        std::shared_ptr< IndexTableBase > on_index_table_found(const superblk< index_table_sb >& sb) override {
+        std::shared_ptr< IndexTableBase > on_index_table_found(superblk< index_table_sb >&& sb) override {
             LOGINFO("Index table recovered");
             LOGINFO("Root bnode_id {} version {}", sb->root_node, sb->link_version);
-            m_test->m_bt = std::make_shared< typename T::BtreeType >(sb, m_test->m_cfg);
+            m_test->m_bt = std::make_shared< typename T::BtreeType >(std::move(sb), m_test->m_cfg);
             return m_test->m_bt;
         }
 

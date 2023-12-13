@@ -22,7 +22,7 @@ RaftReplDev::RaftReplDev(RaftReplService& svc, superblk< raft_repl_dev_superblk 
         m_group_id{rd_sb->group_id},
         m_my_repl_id{svc.get_my_repl_uuid()},
         m_raft_server_id{nuraft_mesg::to_server_id(m_my_repl_id)},
-        m_rd_sb{rd_sb} {
+        m_rd_sb{std::move(rd_sb)} {
     m_state_machine = std::make_shared< RaftStateMachine >(*this);
 
     if (load_existing) {

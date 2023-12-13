@@ -126,7 +126,7 @@ AsyncReplResult< shared< ReplDev > > SoloReplService::create_repl_dev(group_id_t
     superblk< repl_dev_superblk > rd_sb{get_meta_blk_name()};
     rd_sb.create();
     rd_sb->group_id = group_id;
-    auto rdev = std::make_shared< SoloReplDev >(rd_sb, false /* load_existing */);
+    auto rdev = std::make_shared< SoloReplDev >(std::move(rd_sb), false /* load_existing */);
 
     auto listener = m_repl_app->create_repl_dev_listener(group_id);
     listener->set_repl_dev(rdev.get());
@@ -152,7 +152,7 @@ void SoloReplService::load_repl_dev(sisl::byte_view const& buf, void* meta_cooki
     HS_DBG_ASSERT_EQ(rd_sb->get_magic(), repl_dev_superblk::REPL_DEV_SB_MAGIC, "Invalid rdev metablk, magic mismatch");
     HS_DBG_ASSERT_EQ(rd_sb->get_version(), repl_dev_superblk::REPL_DEV_SB_VERSION, "Invalid version of rdev metablk");
     group_id_t group_id = rd_sb->group_id;
-    auto rdev = std::make_shared< SoloReplDev >(rd_sb, true /* load_existing */);
+    auto rdev = std::make_shared< SoloReplDev >(std::move(rd_sb), true /* load_existing */);
 
     auto listener = m_repl_app->create_repl_dev_listener(group_id);
     listener->set_repl_dev(rdev.get());
