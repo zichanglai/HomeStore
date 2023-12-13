@@ -19,9 +19,8 @@ class buffer;
 
 namespace sisl {
 class GenericRpcData;
-}
-
-void intrusive_ptr_release(sisl::GenericRpcData*);
+void intrusive_ptr_release(GenericRpcData*);
+} // namespace sisl
 
 namespace homestore {
 class ReplDev;
@@ -97,7 +96,7 @@ public:
     sisl::io_blob_list_t pkts;
     flatbuffers::FlatBufferBuilder fb_builder;
     sisl::io_blob_safe buf_for_unaligned_data;
-    intrusive< sisl::GenericRpcData > rpc_data;
+    boost::intrusive_ptr< sisl::GenericRpcData > rpc_data;
 };
 
 //
