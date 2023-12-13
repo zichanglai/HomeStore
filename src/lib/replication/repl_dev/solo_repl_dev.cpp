@@ -139,8 +139,4 @@ void SoloReplDev::cp_flush(CP*) {
 }
 
 void SoloReplDev::cp_cleanup(CP*) { m_data_journal->truncate(m_rd_sb->checkpoint_lsn); }
-
-repl_req_ctx::~repl_req_ctx() {
-    if (journal_entry) { journal_entry->~repl_journal_entry(); }
-}
 } // namespace homestore
