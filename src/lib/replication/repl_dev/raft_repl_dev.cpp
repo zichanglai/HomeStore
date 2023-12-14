@@ -16,7 +16,7 @@
 namespace homestore {
 std::atomic< uint64_t > RaftReplDev::s_next_group_ordinal{1};
 
-RaftReplDev::RaftReplDev(RaftReplService& svc, superblk< raft_repl_dev_superblk >& rd_sb, bool load_existing) :
+RaftReplDev::RaftReplDev(RaftReplService& svc, superblk< raft_repl_dev_superblk >&& rd_sb, bool load_existing) :
         m_repl_svc{svc},
         m_msg_mgr{svc.msg_manager()},
         m_group_id{rd_sb->group_id},
@@ -56,6 +56,7 @@ RaftReplDev::RaftReplDev(RaftReplService& svc, superblk< raft_repl_dev_superblk 
                 logstore_service().create_new_log_store(LogStoreService::CTRL_LOG_FAMILY_IDX, false /* append_mode */);
             m_rd_sb->free_blks_journal_id = m_free_blks_journal->get_store_id();
         }
+        m_rd_sb.write();
     }
 
     RD_LOG(INFO, "Started {} RaftReplDev group_id={}, replica_id={}, raft_server_id={} commited_lsn={} next_dsn={}",

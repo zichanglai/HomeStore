@@ -7,7 +7,7 @@
 #include <flatbuffers/flatbuffers.h>
 #include <folly/futures/Future.h>
 #include <sisl/fds/buffer.hpp>
-
+#include <sisl/grpc/generic_service.hpp>
 #include <homestore/replication/repl_decls.h>
 
 namespace nuraft {
@@ -17,11 +17,14 @@ using ptr = std::shared_ptr< T >;
 class buffer;
 } // namespace nuraft
 
+/*
 namespace sisl {
 class GenericRpcData;
-void intrusive_ptr_release(GenericRpcData*);
 } // namespace sisl
 
+void intrusive_ptr_add_ref(sisl::GenericRpcData*);
+void intrusive_ptr_release(sisl::GenericRpcData*);
+*/
 namespace homestore {
 class ReplDev;
 struct repl_req_ctx;
