@@ -135,7 +135,7 @@ shared< nuraft_mesg::mesg_state_mgr > RaftReplService::create_state_mgr(int32_t 
     rd_sb->is_timeline_consistent = m_repl_app->need_timeline_consistency();
 
     // Create a new instance of Raft ReplDev (which is the state manager this method is looking for)
-    auto rdev = std::make_shared< RaftReplDev >(*this, rd_sb, false /* load_existing */);
+    auto rdev = std::make_shared< RaftReplDev >(*this, std::move(rd_sb), false /* load_existing */);
     rdev->use_config(json_superblk{get_meta_blk_name() + "_raft_config"});
 
     // Attach the listener to the raft
@@ -147,7 +147,6 @@ shared< nuraft_mesg::mesg_state_mgr > RaftReplService::create_state_mgr(int32_t 
     add_repl_dev(group_id, rdev);
 
     // Now we can persist the superblk
-    rd_sb.write();
     return std::dynamic_pointer_cast< nuraft_mesg::mesg_state_mgr >(rdev);
 }
 
