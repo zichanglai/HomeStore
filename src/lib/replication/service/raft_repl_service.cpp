@@ -205,7 +205,7 @@ void RaftReplService::load_repl_dev(sisl::byte_view const& buf, void* meta_cooki
     }
 
     // Create an instance of ReplDev from loaded superblk
-    auto rdev = std::make_shared< RaftReplDev >(*this, rd_sb, true /* load_existing */);
+    auto rdev = std::make_shared< RaftReplDev >(*this, std::move(rd_sb), true /* load_existing */);
 
     // Try to join the RAFT group
     auto raft_result = m_msg_mgr->join_group(group_id, "homestore_replication",
