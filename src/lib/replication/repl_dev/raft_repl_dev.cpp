@@ -121,7 +121,7 @@ void RaftReplDev::push_data_to_all_followers(repl_req_ptr_t const& rreq) {
     group_msg_service()
         ->data_service_request_unidirectional(nuraft_mesg::role_regex::ALL, PUSH_DATA, rreq->pkts)
         .via(&folly::InlineExecutor::instance())
-        .thenValue([this, &rreq](auto e) {
+        .thenValue([this, rreq](auto e) {
             // Release the buffer which holds the packets
             RD_LOG(INFO, "Data Channel: Data push completed for rreq=[{}]", rreq->to_compact_string());
             rreq->fb_builder.Release();
