@@ -91,7 +91,7 @@ void RaftReplDev::async_alloc_write(sisl::blob const& header, sisl::blob const& 
         data_service().async_write(rreq->value, rreq->local_blkid).thenValue([this, rreq](auto&& err) {
             HS_REL_ASSERT(!err, "Error in writing data"); // TODO: Find a way to return error to the Listener
             rreq->state.fetch_or(uint32_cast(repl_req_state_t::DATA_WRITTEN));
-            m_state_machine->propose_to_raft(std::move(rreq));
+            m_state_machine->propose_to_raft(rreq);
             // if (rreq->state.load() & uint32_cast(repl_req_state_t::LOG_FLUSHED)) { report_committed(std::move(rreq));
             // }
         });
@@ -121,7 +121,7 @@ void RaftReplDev::push_data_to_all_followers(repl_req_ptr_t const& rreq) {
     group_msg_service()
         ->data_service_request_unidirectional(nuraft_mesg::role_regex::ALL, PUSH_DATA, rreq->pkts)
         .via(&folly::InlineExecutor::instance())
-        .thenValue([this, rreq = std::move(rreq)](auto e) {
+        .thenValue([this, rreq](auto e) {
             // Release the buffer which holds the packets
             RD_LOG(INFO, "Data Channel: Data push completed for rreq=[{}]", rreq->to_compact_string());
             rreq->fb_builder.Release();
